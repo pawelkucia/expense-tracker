@@ -15,24 +15,36 @@ class _ExpensesState extends State<Expenses> {
         title: 'Choco bar',
         amount: 10.22,
         date: DateTime.now(),
-        category: Category.Food),
+        category: Category.food),
     Expense(
         title: 'Bus ticket',
         amount: 5.00,
         date: DateTime.now(),
-        category: Category.Transportation),
+        category: Category.transportation),
     Expense(
         title: 'T-shirt',
         amount: 20.00,
         date: DateTime.now(),
-        category: Category.Clothing),
+        category: Category.clothing),
   ];
+
+  void _openAddExpenseDialog() {
+    showModalBottomSheet(context: context, builder: (ctx) {
+      return Text('Add expense dialog');
+    })
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Expenses'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: _openAddExpenseDialog,
+          ),
+        ],
       ),
       body: Column(
         children: [

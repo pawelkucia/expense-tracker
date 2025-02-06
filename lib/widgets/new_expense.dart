@@ -91,7 +91,6 @@ class _NewExpenseState extends State<NewExpense> {
                 maxLength: 50,
                 decoration: InputDecoration(labelText: 'Title'),
                 controller: _titleController,
-                onSubmitted: (_) => _submitData(),
               ),
               Row(
                 children: [
@@ -103,9 +102,9 @@ class _NewExpenseState extends State<NewExpense> {
                       ),
                       controller: _amountController,
                       keyboardType: TextInputType.number,
-                      onSubmitted: (_) => _submitData(),
                     ),
                   ),
+                  SizedBox(width: 10),
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,

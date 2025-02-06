@@ -51,3 +51,29 @@ class Expense {
     return formatter.format(date);
   }
 }
+
+class ExpenseBucket {
+  ExpenseBucket({
+    required this.category,
+    required this.expenses,
+  });
+
+  ExpenseBucket.forCategory(List<Expense> expensesAll, this.category)
+      : expenses = expensesAll
+            .where((expense) => expense.category == category)
+            .toList();
+
+  final Category category;
+  final List<Expense> expenses;
+
+  double get totalAmount {
+    double total = 0.0;
+
+    for (var expense in expenses) {
+      total += expense.amount;
+    }
+
+    return total;
+    // return expenses.fold(0.0, (sum, expense) => sum + expense.amount);
+  }
+}

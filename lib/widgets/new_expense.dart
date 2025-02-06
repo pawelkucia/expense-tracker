@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:expense_tracker/models/expense.dart';
 
 class NewExpense extends StatefulWidget {
-  const NewExpense({super.key});
+  const NewExpense({super.key, required this.onAddExpense});
+
+  final Function(Expense) onAddExpense;
 
   @override
   State<NewExpense> createState() => _NewExpenseState();
@@ -22,12 +24,39 @@ class _NewExpenseState extends State<NewExpense> {
   }
 
   void _submitData() {
-    final enteredTitle = _titleController.text;
-    final enteredAmount = double.parse(_amountController.text);
+    final enteredTitle = _titleController.text.trim();
+    final enteredAmount = double.tryParse(_amountController.text);
 
-    if (enteredTitle.isEmpty || enteredAmount <= 0 || _selectedDate == null) {
+    var isInvalidAmount = enteredAmount == null || enteredAmount < 0;
+
+    if (enteredTitle.isEmpty || isInvalidAmount || _selectedDate == null) {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text('Invalid Input'),
+              content: Text('Please enter valid title, amount and date!'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                  },
+                  child: Text('Okay'),
+                ),
+              ],
+            );
+          });
       return;
     }
+
+    final newExpense = Expense(
+      title: enteredTitle,
+      amount: enteredAmount,
+      date: _selectedDate!,
+      category: _selectedCategory,
+    );
+
+    widget.onAddExpense(newExpense);
 
     Navigator.of(context).pop();
   }
@@ -54,7 +83,7 @@ class _NewExpenseState extends State<NewExpense> {
       child: Card(
         elevation: 5,
         child: Container(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.fromLTRB(10, 30, 10, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -101,18 +130,25 @@ class _NewExpenseState extends State<NewExpense> {
               Row(
                 children: [
                   DropdownButton(
+                    value: _selectedCategory,
                     items: Category.values
                         .map(
                           (category) => DropdownMenuItem(
                             value: category,
-                            child: Text(category.name),
+                            child: Text(category.name.toUpperCase()),
                           ),
                         )
                         .toList(),
                     onChanged: (value) {
-                      _selectedCategory = value as Category;
+                      if (value == null) {
+                        return;
+                      }
+                      setState(() {
+                        _selectedCategory = value;
+                      });
                     },
                   ),
+                  const Spacer(),
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);

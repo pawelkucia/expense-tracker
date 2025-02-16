@@ -118,13 +118,13 @@ class _NewExpenseState extends State<NewExpense> {
               children: [
                 if (width >= 600)
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: TextField(
                           maxLength: 50,
                           decoration: InputDecoration(labelText: 'Title'),
                           controller: _titleController,
-                          onSubmitted: (_) => _submitData(),
                         ),
                       ),
                       SizedBox(width: 10),
@@ -136,7 +136,6 @@ class _NewExpenseState extends State<NewExpense> {
                           ),
                           controller: _amountController,
                           keyboardType: TextInputType.number,
-                          onSubmitted: (_) => _submitData(),
                         ),
                       ),
                     ],
@@ -146,11 +145,59 @@ class _NewExpenseState extends State<NewExpense> {
                     maxLength: 50,
                     decoration: InputDecoration(labelText: 'Title'),
                     controller: _titleController,
-                    onSubmitted: (_) => _submitData(),
                   ),
-                Row(
-                  children: [
-                    if (width < 600)
+                if (width >= 600)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: DropdownButton(
+                          value: _selectedCategory,
+                          items: Category.values
+                              .map(
+                                (category) => DropdownMenuItem(
+                                  value: category,
+                                  child: Text(category.name.toUpperCase()),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) {
+                            if (value == null) {
+                              return;
+                            }
+                            setState(() {
+                              _selectedCategory = value;
+                            });
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                _selectedDate == null
+                                    ? 'No Date Chosen!'
+                                    : formatter.format(_selectedDate!),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: _presentDatePicker,
+                              icon: Icon(Icons.calendar_month),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                else
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
                       Expanded(
                         child: TextField(
                           decoration: InputDecoration(
@@ -159,51 +206,51 @@ class _NewExpenseState extends State<NewExpense> {
                           ),
                           controller: _amountController,
                           keyboardType: TextInputType.number,
-                          onSubmitted: (_) => _submitData(),
                         ),
                       ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _selectedDate == null
-                                  ? 'No Date Chosen!'
-                                  : formatter.format(_selectedDate!),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                _selectedDate == null
+                                    ? 'No Date Chosen!'
+                                    : formatter.format(_selectedDate!),
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: _presentDatePicker,
-                            icon: Icon(Icons.calendar_month),
-                          ),
-                        ],
+                            IconButton(
+                              onPressed: _presentDatePicker,
+                              icon: Icon(Icons.calendar_month),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
                 Row(
                   children: [
-                    DropdownButton(
-                      value: _selectedCategory,
-                      items: Category.values
-                          .map(
-                            (category) => DropdownMenuItem(
-                              value: category,
-                              child: Text(category.name.toUpperCase()),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        if (value == null) {
-                          return;
-                        }
-                        setState(() {
-                          _selectedCategory = value;
-                        });
-                      },
-                    ),
+                    if (width < 600)
+                      DropdownButton(
+                        value: _selectedCategory,
+                        items: Category.values
+                            .map(
+                              (category) => DropdownMenuItem(
+                                value: category,
+                                child: Text(category.name.toUpperCase()),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          setState(() {
+                            _selectedCategory = value;
+                          });
+                        },
+                      ),
                     const Spacer(),
                     TextButton(
                       onPressed: () {

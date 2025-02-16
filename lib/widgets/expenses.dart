@@ -99,7 +99,6 @@ class _ExpensesState extends State<Expenses> {
           ? Column(
               children: [
                 Chart(expenses: _registeredExpenses),
-                SizedBox(height: 10),
                 Text(
                     'Total expenses: \$${_registeredExpenses.fold(0.0, (sum, item) => sum + item.amount)}'),
                 SizedBox(height: 10),
